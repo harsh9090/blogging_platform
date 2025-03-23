@@ -17,6 +17,7 @@ interface Post {
   };
   createdAt: string;
   likes: number;
+  category: string;
   likedBy: string[];
 }
 
@@ -28,6 +29,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchPosts();
+    
   }, []);
 
   const fetchPosts = async () => {
@@ -104,24 +106,11 @@ export default function HomePage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography 
-        variant="h3" 
-        component="h1" 
-        gutterBottom
-        sx={{ 
-          mb: 4,
-          fontWeight: 700,
-          background: 'linear-gradient(45deg, #FF6B6B 30%, #4ECDC4 90%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-      >
-        Latest Blog Posts
-      </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       
         {posts.map((post) => (
-         
+          console.log("post.likedBy", post.likedBy),
+          console.log("user._id", user),
           <BlogPost
             key={post._id}
             title={post.title}
@@ -132,7 +121,7 @@ export default function HomePage() {
             id={post._id}
             onLike={() => handleLike(post._id, post.author._id)}
             isLiked={user ? post.likedBy?.includes(user._id) : false}
-            
+            category={post.category}
           />
         ))}
       </Box>

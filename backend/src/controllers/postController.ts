@@ -26,18 +26,19 @@ export const getAllPosts = async (req: Request, res: Response) => {
 
 export const createPost = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!req.user?._id) {
+    if (!req.userId) {
       return res.status(401).json({ message: 'User not authenticated' });
     }
-
-    const { title, content, imageUrl } = req.body;
+    
+    const { title, content, imageUrl, category } = req.body;
     const post = new Post({
       title,
       content,
       imageUrl,
-      author: req.user._id,
+      author: req.userId,
       likes: 0,
       likedBy: [],
+      category,
     });
     await post.save();
     await post.populate({

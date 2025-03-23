@@ -23,7 +23,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction): Pro
       return;
     }
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    console.log("decoded",decoded)
     req.userId = decoded.userId;
     next();
   } catch (error) {

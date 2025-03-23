@@ -16,6 +16,7 @@ export interface IPost extends Document {
     content: string;
     createdAt: Date;
   }>;
+  category: string;
 }
 
 const postSchema = new Schema<IPost>(
@@ -65,7 +66,33 @@ const postSchema = new Schema<IPost>(
         type: Date,
         default: Date.now
       }
-    }]
+    }],
+    category: {
+      type: String,
+      required: true,
+      enum: [
+        'Technology',
+        'Programming',
+        'Web Development',
+        'Mobile Development',
+        'Artificial Intelligence',
+        'Machine Learning',
+        'Data Science',
+        'DevOps',
+        'Cloud Computing',
+        'Cybersecurity',
+        'Blockchain',
+        'UI/UX Design',
+        'Product Management',
+        'Business',
+        'Career',
+        'Personal Development',
+        'Lifestyle',
+        'Travel',
+        'Food',
+        'Other'
+      ],
+    },
   },
   {
     timestamps: true,

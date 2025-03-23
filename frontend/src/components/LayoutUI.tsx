@@ -1,333 +1,312 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   AppBar,
-  Box,
   Toolbar,
-  IconButton,
   Typography,
-  Menu,
-  Container,
-  Avatar,
   Button,
-  Tooltip,
+  IconButton,
+  Box,
+  Menu,
   MenuItem,
+  Avatar,
+  useTheme,
+  useMediaQuery,
+  Container,
+  Stack,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import Link from 'next/link';
+import {
+  Menu as MenuIcon,
+  Search as SearchIcon,
+  Notifications as NotificationsIcon,
+  Create as CreateIcon,
+} from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 
-const pages = [
-  { title: 'Home', path: '/' },
-  { title: 'About', path: '/about' },
-];
-
 export default function LayoutUI({ children }: { children: React.ReactNode }) {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { user, logout } = useAuth();
+  const pathname = usePathname();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const handleLogout = () => {
-    handleCloseUserMenu();
     logout();
+    handleClose();
   };
 
-  if (!mounted) {
-    return null;
-  }
+  const isActive = (path: string) => pathname === path;
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-      }}
-    >
-      {/* Animated Background Elements */}
-      <Box
-        sx={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `
-            radial-gradient(circle at 20% 20%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(69, 183, 209, 0.1) 0%, transparent 50%)
-          `,
-          zIndex: 0,
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <AppBar 
+        position="sticky" 
+        elevation={0}
+        sx={{ 
+          background: 'rgba(255, 255, 255, 0.8)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
         }}
-      />
+      >
+        <Container maxWidth="xl">
+          <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
+            {/* Left side - Logo and Navigation */}
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Link href="/" style={{ textDecoration: 'none' }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    color: 'transparent',
+                  }}
+                >
+                  BlogHub
+                </Typography>
+              </Link>
 
-      {/* Floating Elements */}
-      <Box
-        sx={{
-          position: 'fixed',
-          top: '10%',
-          left: '10%',
-          width: '800px',
-          height: '800px',
-          background: 'radial-gradient(circle, rgba(255,107,107,0.2) 0%, rgba(255,107,107,0) 70%)',
-          borderRadius: '50%',
-          filter: 'blur(120px)',
-          animation: 'float 15s ease-in-out infinite',
-          zIndex: 0,
-          opacity: 0.7,
-          willChange: 'transform',
-        }}
-      />
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: '10%',
-          right: '10%',
-          width: '800px',
-          height: '800px',
-          background: 'radial-gradient(circle, rgba(78,205,196,0.2) 0%, rgba(78,205,196,0) 70%)',
-          borderRadius: '50%',
-          filter: 'blur(120px)',
-          animation: 'float 20s ease-in-out infinite reverse',
-          zIndex: 0,
-          opacity: 0.7,
-          willChange: 'transform',
-        }}
-      />
+              {!isMobile && (
+                <Stack direction="row" spacing={1}>
+                  <Link href="/" style={{ textDecoration: 'none' }}>
+                    <Button
+                      color="inherit"
+                      sx={{
+                        color: isActive('/') ? '#4ECDC4' : '#1e293b',
+                        '&:hover': {
+                          color: '#4ECDC4',
+                        },
+                      }}
+                    >
+                      Home
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/categories" style={{ textDecoration: 'none' }}>
+                    <Button
+                      color="inherit"
+                      sx={{
+                        color: isActive('/categories') ? '#4ECDC4' : '#1e293b',
+                        '&:hover': {
+                          color: '#4ECDC4',
+                        },
+                      }}
+                    >
+                      Categories
+                    </Button>
+                  </Link>
+                </Stack>
+              )}
+            </Stack>
 
-      {/* Content Container */}
-      <Box sx={{ position: 'relative', zIndex: 1 }}>
-        <AppBar 
-          position="sticky" 
-          color="default"
-          elevation={0}
-          sx={{
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            backdropFilter: 'blur(10px)',
-            borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-          }}
-        >
-          <Container maxWidth="lg">
-            <Toolbar sx={{ px: 0 }}>
-              {/* Desktop Logo */}
-              <Typography
-                variant="h6"
-                noWrap
-                component={Link}
-                href="/"
-                sx={{
-                  mr: 2,
-                  display: { xs: 'none', md: 'flex' },
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  letterSpacing: '.3rem',
-                  color: '#1e293b',
-                  textDecoration: 'none',
-                }}
-              >
-                BLOG
-              </Typography>
+            {/* Right side - Search, Create Post, Notifications, and User Menu */}
+            <Stack direction="row" spacing={1} alignItems="center">
+              <IconButton sx={{ color: '#1e293b' }}>
+                <SearchIcon />
+              </IconButton>
 
-              {/* Mobile Menu */}
-              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+              {user ? (
+                <>
+                  <Link href="/create" style={{ textDecoration: 'none' }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<CreateIcon />}
+                      sx={{
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%)',
+                        color: 'white',
+                        textTransform: 'none',
+                        '&:hover': {
+                          background: 'linear-gradient(135deg, #45B7AF 0%, #3CA29B 100%)',
+                        },
+                      }}
+                    >
+                      Create Post
+                    </Button>
+                  </Link>
+
+                  <IconButton sx={{ color: '#1e293b' }}>
+                    <NotificationsIcon />
+                  </IconButton>
+
+                  <IconButton
+                    onClick={handleMenu}
+                    sx={{ color: '#1e293b' }}
+                  >
+                    <Avatar
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        bgcolor: '#4ECDC4',
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      {user.username.charAt(0).toUpperCase()}
+                    </Avatar>
+                  </IconButton>
+                </>
+              ) : (
+                <Stack direction="row" spacing={1}>
+                  <Link href="/login" style={{ textDecoration: 'none' }}>
+                    <Button
+                      color="inherit"
+                      sx={{
+                        color: isActive('/login') ? '#4ECDC4' : '#1e293b',
+                        '&:hover': {
+                          color: '#4ECDC4',
+                        },
+                      }}
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link href="/register" style={{ textDecoration: 'none' }}>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%)',
+                        color: 'white',
+                        textTransform: 'none',
+                        '&:hover': {
+                          background: 'linear-gradient(135deg, #45B7AF 0%, #3CA29B 100%)',
+                        },
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                  </Link>
+                </Stack>
+              )}
+
+              {isMobile && (
                 <IconButton
-                  size="large"
-                  aria-label="menu"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
+                  edge="end"
+                  onClick={handleMenu}
                   sx={{ color: '#1e293b' }}
                 >
                   <MenuIcon />
                 </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
+              )}
+            </Stack>
+
+            {/* Mobile Menu */}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              PaperProps={{
+                sx: {
+                  mt: 1.5,
+                  borderRadius: '12px',
+                  minWidth: 200,
+                },
+              }}
+            >
+              {user ? [
+                <MenuItem 
+                  key="create"
+                  component={Link} 
+                  href="/create" 
+                  onClick={handleClose}
                   sx={{
-                    display: { xs: 'block', md: 'none' },
-                    '& .MuiPaper-root': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(0, 0, 0, 0.05)',
+                    color: isActive('/create') ? '#4ECDC4' : '#1e293b',
+                    '&:hover': {
+                      color: '#4ECDC4',
                     },
                   }}
                 >
-                  <MenuItem component={Link} href="/" sx={{ color: 'text.primary' }}>
-                    Home
-                  </MenuItem>
-                  <MenuItem component={Link} href="/create-post" sx={{ color: 'text.primary' }}>
-                    Create Post
-                  </MenuItem>
-                  <MenuItem component={Link} href="/profile" sx={{ color: 'text.primary' }}>
-                    Profile
-                  </MenuItem>
-                </Menu>
-              </Box>
+                  Create Post
+                </MenuItem>,
+                <MenuItem 
+                  key="profile"
+                  component={Link} 
+                  href="/profile" 
+                  onClick={handleClose}
+                  sx={{
+                    color: isActive('/profile') ? '#4ECDC4' : '#1e293b',
+                    '&:hover': {
+                      color: '#4ECDC4',
+                    },
+                  }}
+                >
+                  Profile
+                </MenuItem>,
+                <MenuItem 
+                  key="settings"
+                  component={Link} 
+                  href="/settings" 
+                  onClick={handleClose}
+                  sx={{
+                    color: isActive('/settings') ? '#4ECDC4' : '#1e293b',
+                    '&:hover': {
+                      color: '#4ECDC4',
+                    },
+                  }}
+                >
+                  Settings
+                </MenuItem>,
+                <MenuItem 
+                  key="logout"
+                  onClick={handleLogout}
+                  sx={{
+                    color: '#1e293b',
+                    '&:hover': {
+                      color: '#4ECDC4',
+                    },
+                  }}
+                >
+                  Logout
+                </MenuItem>
+              ] : [
+                <MenuItem 
+                  key="login"
+                  component={Link} 
+                  href="/login" 
+                  onClick={handleClose}
+                  sx={{
+                    color: isActive('/login') ? '#4ECDC4' : '#1e293b',
+                    '&:hover': {
+                      color: '#4ECDC4',
+                    },
+                  }}
+                >
+                  Login
+                </MenuItem>,
+                <MenuItem 
+                  key="register"
+                  component={Link} 
+                  href="/register" 
+                  onClick={handleClose}
+                  sx={{
+                    color: isActive('/register') ? '#4ECDC4' : '#1e293b',
+                    '&:hover': {
+                      color: '#4ECDC4',
+                    },
+                  }}
+                >
+                  Sign Up
+                </MenuItem>
+              ]}
+            </Menu>
+          </Toolbar>
+        </Container>
+      </AppBar>
 
-              {/* Mobile Logo */}
-              <Typography
-                variant="h5"
-                noWrap
-                component={Link}
-                href="/"
-                sx={{
-                  mr: 2,
-                  display: { xs: 'flex', md: 'none' },
-                  flexGrow: 1,
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  letterSpacing: '.3rem',
-                  color: '#1e293b',
-                  textDecoration: 'none',
-                }}
-              >
-                BLOG
-              </Typography>
-
-              {/* Desktop Navigation */}
-              <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>
-                {pages.map((page) => (
-                  <Link key={page.title} href={page.path} style={{ textDecoration: 'none' }}>
-                    <Button
-                      onClick={handleCloseNavMenu}
-                      sx={{
-                        my: 2,
-                        color: '#1e293b',
-                        display: 'block',
-                        '&:hover': {
-                          color: '#64748b',
-                        },
-                      }}
-                    >
-                      {page.title}
-                    </Button>
-                  </Link>
-                ))}
-              </Box>
-
-              {/* User Menu */}
-              <Box sx={{ flexGrow: 0, ml: 2 }}>
-                {user ? (
-                  <>
-                    <Tooltip title="Open settings">
-                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt={user.name} src="/static/images/avatar/2.jpg" />
-                      </IconButton>
-                    </Tooltip>
-                    <Menu
-                      sx={{ 
-                        mt: '45px',
-                        '& .MuiPaper-root': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          backdropFilter: 'blur(10px)',
-                          border: '1px solid rgba(0, 0, 0, 0.05)',
-                        },
-                      }}
-                      id="menu-appbar"
-                      anchorEl={anchorElUser}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      open={Boolean(anchorElUser)}
-                      onClose={handleCloseUserMenu}
-                    >
-                      <MenuItem component={Link} href="/" sx={{ color: 'text.primary' }}>
-                        Home
-                      </MenuItem>
-                      <MenuItem component={Link} href="/create-post" sx={{ color: 'text.primary' }}>
-                        Create Post
-                      </MenuItem>
-                      <MenuItem component={Link} href="/profile" sx={{ color: 'text.primary' }}>
-                        Profile
-                      </MenuItem>
-                      <MenuItem onClick={handleLogout}>
-                        <Typography textAlign="center" sx={{ color: '#1e293b' }}>
-                          Logout
-                        </Typography>
-                      </MenuItem>
-                    </Menu>
-                  </>
-                ) : (
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Link href="/login" style={{ textDecoration: 'none' }}>
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          color: '#1e293b',
-                          borderColor: '#1e293b',
-                          '&:hover': {
-                            borderColor: '#64748b',
-                            color: '#64748b',
-                          },
-                        }}
-                      >
-                        Login
-                      </Button>
-                    </Link>
-                    <Link href="/register" style={{ textDecoration: 'none' }}>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          background: 'linear-gradient(45deg, #FF6B6B 30%, #4ECDC4 90%)',
-                          '&:hover': {
-                            background: 'linear-gradient(45deg, #FF5252 30%, #45B7D1 90%)',
-                          },
-                        }}
-                      >
-                        Register
-                      </Button>
-                    </Link>
-                  </Box>
-                )}
-              </Box>
-            </Toolbar>
-          </Container>
-        </AppBar>
-
-        <Box component="main" sx={{ flexGrow: 1 }}>
-          {children}
-        </Box>
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        {children}
       </Box>
     </Box>
   );
