@@ -4,6 +4,7 @@ import cors from 'cors';
 import postRoutes from './routes/postRoutes';
 import authRoutes from './routes/auth';
 import { MONGODB_URI, PORT } from './config/constants';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 
@@ -27,7 +28,7 @@ mongoose.connect(MONGODB_URI, {
 // Routes
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
-
+app.use('/api/users', userRoutes);
 // Basic route
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Blog Website API' });

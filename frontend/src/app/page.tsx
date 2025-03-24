@@ -109,8 +109,6 @@ export default function HomePage() {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       
         {posts.map((post) => (
-          console.log("post.likedBy", post.likedBy),
-          console.log("user._id", user),
           <BlogPost
             key={post._id}
             title={post.title}

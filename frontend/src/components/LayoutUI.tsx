@@ -20,7 +20,6 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Search as SearchIcon,
   Notifications as NotificationsIcon,
   Create as CreateIcon,
 } from '@mui/icons-material';
@@ -113,9 +112,9 @@ export default function LayoutUI({ children }: { children: React.ReactNode }) {
 
             {/* Right side - Search, Create Post, Notifications, and User Menu */}
             <Stack direction="row" spacing={1} alignItems="center">
-              <IconButton sx={{ color: '#1e293b' }}>
+              {/* <IconButton sx={{ color: '#1e293b' }}>
                 <SearchIcon />
-              </IconButton>
+              </IconButton> */}
 
               {user ? (
                 <>
@@ -216,20 +215,7 @@ export default function LayoutUI({ children }: { children: React.ReactNode }) {
               }}
             >
               {user ? [
-                <MenuItem 
-                  key="create"
-                  component={Link} 
-                  href="/create" 
-                  onClick={handleClose}
-                  sx={{
-                    color: isActive('/create') ? '#4ECDC4' : '#1e293b',
-                    '&:hover': {
-                      color: '#4ECDC4',
-                    },
-                  }}
-                >
-                  Create Post
-                </MenuItem>,
+                
                 <MenuItem 
                   key="profile"
                   component={Link} 
@@ -244,20 +230,7 @@ export default function LayoutUI({ children }: { children: React.ReactNode }) {
                 >
                   Profile
                 </MenuItem>,
-                <MenuItem 
-                  key="settings"
-                  component={Link} 
-                  href="/settings" 
-                  onClick={handleClose}
-                  sx={{
-                    color: isActive('/settings') ? '#4ECDC4' : '#1e293b',
-                    '&:hover': {
-                      color: '#4ECDC4',
-                    },
-                  }}
-                >
-                  Settings
-                </MenuItem>,
+                
                 <MenuItem 
                   key="logout"
                   onClick={handleLogout}

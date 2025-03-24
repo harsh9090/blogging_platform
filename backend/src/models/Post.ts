@@ -100,7 +100,7 @@ const postSchema = new Schema<IPost>(
 );
 
 // Update the updatedAt timestamp before saving
-postSchema.pre('save', function(next) {
+postSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();
 });

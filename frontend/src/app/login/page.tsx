@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Box,
   Button,
@@ -22,7 +21,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
-  const router = useRouter();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -49,9 +47,9 @@ export default function LoginPage() {
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
       }
-
       // Use the auth context to handle login
       login(data.token, data.user);
+      
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);

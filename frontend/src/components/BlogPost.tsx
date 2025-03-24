@@ -10,12 +10,15 @@ import {
   Chip,
   CircularProgress,
   Tooltip,
+  Button,
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CategoryIcon from '@mui/icons-material/Category';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { formatDistanceToNow } from 'date-fns';
+import Comment from './Comment';
 
 interface BlogPostProps {
   title: string;
@@ -34,6 +37,17 @@ interface BlogPostProps {
   category: string;
 }
 
+interface CommentType {
+  _id: string;
+  content: string;
+  author: {
+    _id: string;
+    username: string;
+    avatar?: string;
+  };
+  createdAt: string;
+}
+
 export default function BlogPost({
   title,
   content,
@@ -48,6 +62,10 @@ export default function BlogPost({
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [isLiking, setIsLiking] = useState(false);
   const [readingTime, setReadingTime] = useState(0);
+  const [comments, setComments] = useState<CommentType[]>([]);
+  const [showComments, setShowComments] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
 
   // Calculate reading time
   useEffect(() => {
@@ -55,6 +73,24 @@ export default function BlogPost({
     const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
     setReadingTime(Math.ceil(wordCount / wordsPerMinute));
   }, [content]);
+
+  // Fetch initial comment count
+  useEffect(() => {
+    const fetchCommentCount = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts/${id}/comments`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch comments');
+        }
+        const data = await response.json();
+        setCommentCount(data.length);
+      } catch (error) {
+        console.error('Error fetching comment count:', error);
+      }
+    };
+
+    fetchCommentCount();
+  }, [id]);
 
   const handleLike = async () => {
     if (isLiking) return;
@@ -67,6 +103,30 @@ export default function BlogPost({
     } finally {
       setIsLiking(false);
     }
+  };
+
+  const fetchComments = async () => {
+    setIsLoadingComments(true);
+    try {
+      const response = await fetch(`http://localhost:5000/api/posts/${id}/comments`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch comments');
+      }
+      const data = await response.json();
+      setComments(data);
+      setCommentCount(data.length);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    } finally {
+      setIsLoadingComments(false);
+    }
+  };
+
+  const handleToggleComments = () => {
+    if (!showComments) {
+      fetchComments();
+    }
+    setShowComments(!showComments);
   };
 
   // Function to get initials from name
@@ -307,6 +367,35 @@ export default function BlogPost({
             {likes} {likes === 1 ? 'like' : 'likes'}
           </Typography>
         </Box>
+
+        <Box sx={{ mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Button
+            onClick={handleToggleComments}
+            startIcon={<ChatBubbleOutlineIcon />}
+            sx={{
+              color: '#64748b',
+              '&:hover': {
+                color: '#4ECDC4',
+              },
+            }}
+          >
+            {commentCount} Comments
+          </Button>
+        </Box>
+
+        {showComments && (
+          isLoadingComments ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+              <CircularProgress size={24} />
+            </Box>
+          ) : (
+            <Comment
+              postId={id}
+              comments={comments}
+              onCommentAdded={fetchComments}
+            />
+          )
+        )}
       </CardContent>
     </Card>
   );
