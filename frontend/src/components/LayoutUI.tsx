@@ -62,7 +62,17 @@ export default function LayoutUI({ children }: { children: React.ReactNode }) {
           <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
             {/* Left side - Logo and Navigation */}
             <Stack direction="row" spacing={2} alignItems="center">
-              <Link href="/" style={{ textDecoration: 'none' }}>
+              <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box
+                  component="img"
+                  src="/logo.png"
+                  alt="BLOGNEST"
+                  sx={{
+                    height: { xs: 32, md: 40 },
+                    width: 'auto',
+                    color: '#4ECDC4'
+                  }}
+                />
                 <Typography
                   variant="h6"
                   sx={{
@@ -73,7 +83,7 @@ export default function LayoutUI({ children }: { children: React.ReactNode }) {
                     color: 'transparent',
                   }}
                 >
-                  BlogHub
+                  BlogNest 
                 </Typography>
               </Link>
 

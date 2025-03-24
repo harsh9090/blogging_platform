@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 50 L250 250 L50 450" stroke="currentColor" stroke-width="20"/>
+  <path d="M450 50 L250 250 L450 450" stroke="currentColor" stroke-width="20"/>
+  <path d="M200 200 L250 250 L200 300" stroke="currentColor" stroke-width="20"/>
+  <path d="M300 200 L250 250 L300 300" stroke="currentColor" stroke-width="20"/>
+  <text x="250" y="270" text-anchor="middle" font-family="monospace" font-size="40" font-weight="700" fill="currentColor">BLOGNEST</text>
+</svg> 
